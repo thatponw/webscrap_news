@@ -18,30 +18,45 @@ def property():
         # ข้อมูลที่ต้องการอาจแตกต่างกันขึ้นอยู่กับโครงสร้าง HTML ของลิงก์นั้น ๆ
         # ในตัวอย่างนี้เราจะดึงลิงก์ที่อยู่ในตำแหน่งที่ 17 ของรายการลิงก์ทั้งหมดที่อยู่ในแท็ก <a>
         links = soup.find_all("a")
+        selected_links = []
 
         # ตรวจสอบให้แน่ใจว่ามีลิงก์ตำแหน่งที่ 17 หรือไม่
-        if len(links) >= 18:  # เนื่องจากเริ่มต้นนับที่ 0
-            link_index = links[18].get("href")
-            # print(link_index)
-
-        return link_index
+        for i in range(18,35) :
+            if i < len(links):  # เนื่องจากเริ่มต้นนับที่ 0
+                selected_links.append(links[i].get("href"))
+                
+        return selected_links
     
 def news():
-    url = str('https://www.bangkokbiznews.com'+str(property()))
-    r = requests.get(url)
-    r.text[:200]
+    url_list = property()
+    news_list = []  # สร้างลิสต์เพื่อเก็บข่าวทั้งหมด
 
-    s = BeautifulSoup(r.text,'lxml')
+    for idx, link in enumerate(url_list, start=1):
+        url = f'https://www.bangkokbiznews.com{link}'
+        r = requests.get(url)
+        r.text[:200]
 
-    d=s.find('div',{'id':'content'})
+        s = BeautifulSoup(r.text, 'lxml')
 
-    p_tag = d.find_all('p')
+        d = s.find('div', {'id': 'content'})
 
-    content_list = []  # สร้างลิสต์เพื่อเก็บเนื้อหาข่าว
+        p_tag = d.find_all('p')
 
-    for i in p_tag:
-        content = i.get_text()
-        content = content.replace('\n', '').replace('\xa0', '')
-        content_list.append(content)
-    
-    return content_list  # คืนค่าเนื้อหาข่าวที่ถูกเก็บในรูปแบบของลิสต์
+        content = ''  # สร้างตัวแปรเพื่อเก็บเนื้อหาข่าว
+
+        for i in p_tag:
+            paragraph = i.get_text()
+            paragraph = paragraph.replace('\n', '').replace('\xa0', '')
+            content += paragraph
+
+        
+        news_list.append(content)
+
+    return news_list
+    # แสดงผลลิสต์ของเนื้อหาข่าว
+    for idx, news_content in enumerate(news_list, start=1):
+        print(f"News {idx}:\n{news_content}\n")
+
+# เรียกใช้ฟังก์ชัน
+
+# print(news())
