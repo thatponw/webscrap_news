@@ -57,6 +57,26 @@ def news():
     for idx, news_content in enumerate(news_list, start=1):
         print(f"News {idx}:\n{news_content}\n")
 
-# เรียกใช้ฟังก์ชัน
 
-# print(news())
+def news_time():
+
+    news_list = []  # สร้างลิสต์เพื่อเก็บข้อมูลข่าวทั้งหมด
+
+    for idx, link in enumerate(property(), start=1):
+        url = f'https://www.bangkokbiznews.com{link}'
+        r = requests.get(url)
+        r.text[:200]
+
+        s = BeautifulSoup(r.text, 'lxml')
+
+        d = s.find('span', {'class': 'date'})
+        date_text = d.get_text(strip=True)
+
+        news_list.append(date_text)
+
+    return news_list  # คืนค่าลิสต์ข้อมูลข่าวทั้งหมด
+        
+
+
+# เรียกใช้ฟังก์ชัน
+print(news_time())
