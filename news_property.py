@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 from datetime import *
+import sqlite3
 
 def property():
     # ลิงก์ที่คุณต้องการดึงข้อมูล
@@ -113,4 +114,17 @@ data = {
 
 df = pd.DataFrame(data)
 
-print(df)
+connection = sqlite3.connect(r'C:\thatsapon\database\SQLite\db_ThirdParty.db')
+cursor = connection.cursor()
+
+for index, row in df.iterrows():
+    cursor.execute('''SELECT * FROM news_property WHERE date_news = ? AND content_news = ?''',
+                   (row['date_news'], row['content_news']))
+    existing_data = cursor.fetchall()
+
+    if not existing_data:
+        cursor.execute('''INSERT INTO news_property (date_news, content_news, created_on, views) VALUES (?, ?, ?, ?)''', 
+                       (row['date_news'], row['content_news'], row['created_on'], row['views']))
+        connection.commit()
+
+connection.close()
