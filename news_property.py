@@ -1,5 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
+import pandas as pd
+from datetime import *
 
 def property():
     # ลิงก์ที่คุณต้องการดึงข้อมูล
@@ -76,6 +78,10 @@ def news_time():
 
     return news_list  # คืนค่าลิสต์ข้อมูลข่าวทั้งหมด
         
+def convert_k_to_int(x):
+    if 'k' in x:
+        return int(float(x.replace('k', '')) * 1000)
+    return int(x)
 
 def news_views():
 
@@ -91,10 +97,20 @@ def news_views():
         d = s.find('span', {'class': 'views'})
         views_text = d.get_text(strip=True)
 
-        news_list.append(views_text)
+        news_list.append(convert_k_to_int(views_text))
 
     return news_list  # คืนค่าลิสต์ข้อมูลข่าวทั้งหมด
 
 
-# เรียกใช้ฟังก์ชัน
-print(news_views())
+current_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+data = {
+    'date_news' : news_time(),
+    'content_news' : news(),
+    'created_on' : current_datetime,
+    'views' : news_views()
+}
+
+df = pd.DataFrame(data)
+
+print(df)
