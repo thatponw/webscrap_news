@@ -98,10 +98,12 @@ def news_views():
         d = s.find('span', {'class': 'views'})
         views_text = d.get_text(strip=True)
 
-        news_list.append(convert_k_to_int(views_text))
+        if views_text :
+            news_list.append(convert_k_to_int(views_text))
+        else :
+            news_list.append(None)
 
     return news_list  # คืนค่าลิสต์ข้อมูลข่าวทั้งหมด
-
 
 def title_news() :
     link_to_scrape = "https://www.bangkokbiznews.com/category/property"  # แทนที่ด้วยลิงก์ที่คุณต้องการดึงข้อมูล
