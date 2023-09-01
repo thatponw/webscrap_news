@@ -135,6 +135,7 @@ current_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 data = {
     'date_news' : news_time(),
+    'from_web' : 'กรุงเทพธุรกิจ',
     'Title_news' : title_news(),
     'content_news' : news(),
     'created_on' : current_datetime,
@@ -152,8 +153,8 @@ for index, row in df.iterrows():
     existing_data = cursor.fetchall()
 
     if not existing_data:
-        cursor.execute('''INSERT INTO news_property (date_news, Title_news, content_news, created_on, views) VALUES (?, ?, ?, ?, ?)''', 
-                       (row['date_news'], row['Title_news'], row['content_news'], row['created_on'], row['views']))
+        cursor.execute('''INSERT INTO news_property (date_news, from_web, Title_news, content_news, created_on, views) VALUES (?, ?, ?, ?, ?, ?)''', 
+                       (row['date_news'], row['from_web'], row['Title_news'], row['content_news'], row['created_on'], row['views']))
         connection.commit()
 
 connection.close()
