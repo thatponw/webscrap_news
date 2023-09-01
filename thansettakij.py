@@ -27,6 +27,33 @@ def property():
                 
         return selected_links
 
+
+def news():
+    url_list = property()
+    news_list = []  # สร้างลิสต์เพื่อเก็บข่าวทั้งหมด
+
+    for idx, link in enumerate(url_list, start=1):
+        url = f'https://www.thansettakij.com{link}'
+        r = requests.get(url)
+        r.text[:200]
+
+        s = BeautifulSoup(r.text, 'lxml')
+
+        d = s.find('div', {'class': 'detail'})
+
+        p_tag = d.find_all('p')
+
+        content = ''  # สร้างตัวแปรเพื่อเก็บเนื้อหาข่าว
+
+        for i in p_tag:
+            paragraph = i.get_text()
+            paragraph = paragraph.replace('\n', '').replace('\xa0', '')
+            content += paragraph
+
         
-# print(property())
-print(property())
+        news_list.append(content)
+
+    return news_list
+
+print(news())
+
