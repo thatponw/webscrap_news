@@ -23,7 +23,7 @@ def property():
         links = soup.find_all("a")
         selected_links = []
 
-        # ตรวจสอบให้แน่ใจว่ามีลิงก์ตำแหน่งที่ 17 หรือไม่
+        # ตรวจสอบให้แน่ใจว่ามีลิงก์ตำแหน่งที่ 18 หรือไม่
         for i in range(18,35) :
             if i < len(links):  # เนื่องจากเริ่มต้นนับที่ 0
                 selected_links.append(links[i].get("href"))
@@ -103,10 +103,37 @@ def news_views():
     return news_list  # คืนค่าลิสต์ข้อมูลข่าวทั้งหมด
 
 
+def title_news() :
+    link_to_scrape = "https://www.bangkokbiznews.com/category/property"  # แทนที่ด้วยลิงก์ที่คุณต้องการดึงข้อมูล
+
+    # ดึงเนื้อหาจากลิงก์
+    response = requests.get(link_to_scrape)
+    html_content = response.text
+
+    # ตรวจสอบสถานะการเชื่อมต่อ 200 คือเชื่อมต่อสำเร็จ
+    if response.status_code == 200:
+        # สร้างตัวแปร BeautifulSoup เพื่อวิเคราะห์ HTML ของลิงก์
+        soup = BeautifulSoup(html_content, "html.parser")
+
+        # ตัวอย่างการดึงข้อมูลจากลิงก์
+        # ข้อมูลที่ต้องการอาจแตกต่างกันขึ้นอยู่กับโครงสร้าง HTML ของลิงก์นั้น ๆ
+        # ในตัวอย่างนี้เราจะดึงลิงก์ที่อยู่ในตำแหน่งที่ 17 ของรายการลิงก์ทั้งหมดที่อยู่ในแท็ก <a>
+        links = soup.find_all("h3")
+        selected_links = []
+
+        # # ตรวจสอบให้แน่ใจว่ามีลิงก์ตำแหน่งที่ 18 หรือไม่
+        for i in range(0,17) :
+            if i < len(links):  # เนื่องจากเริ่มต้นนับที่ 0
+                selected_links.append(links[i].text)
+                
+        return selected_links
+
+
 current_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 data = {
     'date_news' : news_time(),
+    'Title_news' : title_news(),
     'content_news' : news(),
     'created_on' : current_datetime,
     'views' : news_views()
@@ -123,8 +150,8 @@ for index, row in df.iterrows():
     existing_data = cursor.fetchall()
 
     if not existing_data:
-        cursor.execute('''INSERT INTO news_property (date_news, content_news, created_on, views) VALUES (?, ?, ?, ?)''', 
-                       (row['date_news'], row['content_news'], row['created_on'], row['views']))
+        cursor.execute('''INSERT INTO news_property (date_news, Title_news, content_news, created_on, views) VALUES (?, ?, ?, ?, ?)''', 
+                       (row['date_news'], row['Title_news'], row['content_news'], row['created_on'], row['views']))
         connection.commit()
 
 connection.close()
