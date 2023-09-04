@@ -56,4 +56,23 @@ def news():
     return news_list
 
 
-print(news())
+def news_time():
+
+    news_list = []  # สร้างลิสต์เพื่อเก็บข้อมูลข่าวทั้งหมด
+
+    for idx, link in enumerate(property(), start=1):
+        url = f'{link}'
+        r = requests.get(url)
+        r.text[:200]
+
+        s = BeautifulSoup(r.text, 'lxml')
+
+        d = s.find('span', {'class': 'jsx-1959557358 infoItem'})
+        date_text = d.get_text(strip=True).replace('(', '').replace(')', '')
+
+
+        news_list.append(date_text)
+
+    return news_list  # คืนค่าลิสต์ข้อมูลข่าวทั้งหมด
+
+print(news_time())
