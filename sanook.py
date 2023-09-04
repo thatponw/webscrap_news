@@ -75,4 +75,29 @@ def news_time():
 
     return news_list  # คืนค่าลิสต์ข้อมูลข่าวทั้งหมด
 
-print(news_time())
+
+def news_views():
+
+    news_list = []  # สร้างลิสต์เพื่อเก็บข้อมูลข่าวทั้งหมด
+
+    for idx, link in enumerate(property(), start=1):
+        url = f'https://www.sanook.com/news/tag/%E0%B8%AD%E0%B8%AA%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%B2%E0%B8%A3%E0%B8%B4%E0%B8%A1%E0%B8%97%E0%B8%A3%E0%B8%B1%E0%B8%9E%E0%B8%A2%E0%B9%8C/'
+        r = requests.get(url)
+        r.text[:200]
+
+        s = BeautifulSoup(r.text, 'lxml')
+
+        spans = s.find_all('span', {'class': 'jsx-1818055635 text'})
+        
+        # เลือกตัวอิลิเมนต์ที่คุณต้องการโดยดัชนี (index)
+        for i in range(1, len(spans), 2):
+            if i < len(spans):
+                views_text = spans[i].get_text(strip=True)
+                news_list.append(views_text)
+            else:
+                news_list.append(None)
+
+    return news_list  # คืนค่าลิสต์ข้อมูลข่าวทั้งหมด
+
+
+print(news_views())
